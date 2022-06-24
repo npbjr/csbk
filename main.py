@@ -207,13 +207,17 @@ class Board:
     def move_south(self, player):
 
         old_player_data = player
-        player.position.y = 1
+        player.position.y += 1
         new_player_data = player
 
         if player.position.y > 7:
             player.position.x = -1
             player.position.y = -1
             new_player_data.status = "DROWNED"
+            new_player_data.position = None
+            new_player_data.attack = 0
+            new_player_data.defence = 0
+            self.insert_player_if_not(new_player_data)
             return
         self.update_player_id_position(old_player_data, new_player_data)
 
@@ -225,18 +229,26 @@ class Board:
             player.position.x = -1
             player.position.y = -1
             new_player_data.status = "DROWNED"
+            new_player_data.position = None
+            new_player_data.attack = 0
+            new_player_data.defence = 0
+            self.insert_player_if_not(new_player_data)
             return
 
         self.update_player_id_position(old_player_data, new_player_data)
 
     def move_east(self, player):
         old_player_data = player
-        player.position.x = 1
+        player.position.x += 1
         new_player_data = player
         if player.position.x > 7:
             player.position.x = -1
             player.position.y = -1
             new_player_data.status = "DROWNED"
+            new_player_data.position = None
+            new_player_data.attack = 0
+            new_player_data.defence = 0
+            self.insert_player_if_not(new_player_data)
             return
 
         self.update_player_id_position(old_player_data, new_player_data)
@@ -249,6 +261,10 @@ class Board:
             player.position.x = -1
             player.position.y = -1
             new_player_data.status = "DROWNED"
+            new_player_data.position = None
+            new_player_data.attack = 0
+            new_player_data.defence = 0
+            self.insert_player_if_not(new_player_data)
             return
 
         self.update_player_id_position(old_player_data, new_player_data)
@@ -289,7 +305,7 @@ class Player:
 b = Board()
 
 # initial item data
-axe = Item(1, 0, "axe")
+axe = Item(2, 2, "axe")
 axe.set_attack(2)
 
 dagger = Item(2, 5, "dagger")
@@ -342,7 +358,7 @@ def game_start(moves):
         d = dict()
         for p in b.players:
             d[p.player_name] = [
-                list(p.position.values()),
+                "null" if p.position is None else list(p.position.values()),
                 p.status,
                 p.get_item_name(),
                 p.attack,
