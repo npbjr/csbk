@@ -353,6 +353,7 @@ def game_start(moves):
             d[p.item_name] = [list(p.position.values()), p.equiped]
 
         print(d)
+        return d
 
     else:
         print("invalid commands")
@@ -363,4 +364,7 @@ if __name__ == "__main__":
     for line in fileinput.input():
         moves.append(line.strip())
 
-    game_start(moves)
+    result = game_start(moves)
+    if result:
+        with open('result.txt', 'w') as f:
+            f.write(str(result))
