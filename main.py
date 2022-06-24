@@ -1,5 +1,6 @@
 import uuid
 from typing import cast
+import fileinput
 
 
 class MakeAttribute(dict):
@@ -288,7 +289,6 @@ class Player:
 b = Board()
 
 # initial item data
-
 axe = Item(1, 0, "axe")
 axe.set_attack(2)
 
@@ -307,62 +307,62 @@ items = [axe, dagger, helmet, majicstaff]
 for t in items:
     b.add_item_position(t)
 
+def game_start(moves):
+    # moves = ["GAME-START", "R:S", "R:S", "B:E", "G:N", "Y:N", "GAME-END"]
 
-# b.move_south(blue)
-# b.move_south(red)
-# b.move_north(green)
-# b.move_north(yellow)
+    if (
+            "GAME-START" == moves[0]
+            and "GAME-END" in moves
+    ):
+        last_index = moves.index("GAME-END")
+        data = moves[1:last_index]
 
-# create player result data
+        # create player
+        red = Player("red", 0, 0)
+        blue = Player("blue", 7, 0)
+        green = Player("green", 7, 7)
+        yellow = Player("yellow", 0, 7)
+        direction_map = {
+            "S": b.move_south,
+            "W": b.move_west,
+            "E": b.move_east,
+            "N": b.move_north,
+        }
+        player_map = {"R": red, "B": blue, "G": green, "Y": yellow}
+        for c in data:
+            com = c.split(":")
+            if com[1] not in direction_map.keys():
+                print("invalid direction")
+                break
+            elif com[0] not in player_map.keys():
+                print("player not found")
+                break
+
+            f = direction_map[com[1]]
+            f(player_map[com[0]])
+
+        d = dict()
+        for p in b.players:
+            d[p.player_name] = [
+                list(p.position.values()),
+                p.status,
+                p.get_item_name(),
+                p.attack,
+                p.defence,
+            ]
+        # create item result data
+        for p in items:
+            d[p.item_name] = [list(p.position.values()), p.equiped]
+
+        print(d)
+
+    else:
+        print("invalid commands")
 
 
-sample_text_file_command = ["GAME-START", "R:S", "R:S", "B:E", "G:N", "Y:N", "GAME-END"]
+if __name__ == "__main__":
+    moves = []
+    for line in fileinput.input():
+        moves.append(line.strip())
 
-if (
-    "GAME-START" == sample_text_file_command[0]
-    and "GAME-END" in sample_text_file_command
-):
-    last_index = sample_text_file_command.index("GAME-END")
-    data = sample_text_file_command[1:last_index]
-
-    # create player
-    red = Player("red", 0, 0)
-    blue = Player("blue", 7, 0)
-    green = Player("green", 7, 7)
-    yellow = Player("yellow", 0, 7)
-    direction_map = {
-        "S": b.move_south,
-        "W": b.move_west,
-        "E": b.move_east,
-        "N": b.move_north,
-    }
-    player_map = {"R": red, "B": blue, "G": green, "Y": yellow}
-    for c in data:
-        com = c.split(":")
-        if com[1] not in direction_map.keys():
-            print("invalid direction")
-            break
-        elif com[0] not in player_map.keys():
-            print("player not found")
-            break
-
-        f = direction_map[com[1]]
-        f(player_map[com[0]])
-
-    d = dict()
-    for p in b.players:
-        d[p.player_name] = [
-            list(p.position.values()),
-            p.status,
-            p.get_item_name(),
-            p.attack,
-            p.defence,
-        ]
-    # create item result data
-    for p in items:
-        d[p.item_name] = [list(p.position.values()), p.equiped]
-
-    print(d)
-
-else:
-    print("invalid commands")
+    game_start(moves)
