@@ -181,7 +181,7 @@ class Board:
 
     def handle_fight(self, attacker, defender):
         attacker_score = attacker.attack
-        attacker_score = float(0.5)  # special bonus for attacker
+        attacker_score += float(0.5)  # special bonus for attacker
         defender_score = defender.defence
         print(attacker_score, defender_score)
         if attacker_score > defender_score:
