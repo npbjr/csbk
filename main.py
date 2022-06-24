@@ -181,7 +181,7 @@ class Board:
 
     def handle_fight(self, attacker, defender):
         attacker_score = attacker.attack
-        attacker_score += float(0.5)  # special bonus for attacker
+        attacker_score = float(0.5)  # special bonus for attacker
         defender_score = defender.defence
         print(attacker_score, defender_score)
         if attacker_score > defender_score:
@@ -307,13 +307,11 @@ items = [axe, dagger, helmet, majicstaff]
 for t in items:
     b.add_item_position(t)
 
+
 def game_start(moves):
     # moves = ["GAME-START", "R:S", "R:S", "B:E", "G:N", "Y:N", "GAME-END"]
 
-    if (
-            "GAME-START" == moves[0]
-            and "GAME-END" in moves
-    ):
+    if "GAME-START" == moves[0] and "GAME-END" in moves:
         last_index = moves.index("GAME-END")
         data = moves[1:last_index]
 
